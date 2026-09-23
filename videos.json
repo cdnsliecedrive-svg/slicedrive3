@@ -2,7 +2,15 @@
   "videos": [
     {
       "id": "K1Hi.mp4",
-      "cdn": "https://cdn2.slicedrive.com/kuHr7iXo1.mp4"
+      "cdn": "https://cdn2.slicedrive.com/F2ipJTlP1.mp4"
+    },
+    {
+      "id": "K2Hi.mp4",
+      "cdn": "https://cdn2.slicedrive.com/eQcwQzv91.mp4"
+    },
+    {
+      "id": "K3Hi.mp4",
+      "cdn": "https://cdn2.slicedrive.com/099O9dSb1.mp4"
     }
   ]
 }
