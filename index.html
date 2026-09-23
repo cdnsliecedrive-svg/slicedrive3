@@ -1,0 +1,133 @@
+<!DOCTYPE html><html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Video Player</title>  <style>
+    body {
+      margin: 0;
+      background: #000;
+      overflow: hidden;
+    }
+
+    video {
+      width: 100%;
+      height: 100vh;
+      object-fit: contain;
+      background: #000;
+    }
+
+    #title {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      z-index: 10;
+      color: #fff;
+      font-size: 14px;
+      margin: 0;
+    }
+
+    #error {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: #fff;
+      font-size: 14px;
+      text-align: center;
+      display: none;
+    }
+  </style></head><body>  <p id="title"></p>
+  <div id="error">Video tidak ditemukan.</div><video
+id="player"
+controls
+playsinline
+controlsList="nodownload">
+</video>
+
+  <script>
+    const JSON_URL = "./videos.json";
+
+    const DIRECT_LINK =
+      "https://www.profitableratecpmnetwork.com/xm3t1rxs3q?key=f81d3ab66f4aedf0145980588159a3b1";
+
+    const video = document.getElementById("player");
+    const title = document.getElementById("title");
+    const error = document.getElementById("error");
+
+    let redirected = false;
+
+    function getVideoId() {
+      const hash = window.location.hash;
+
+      if (!hash) return null;
+
+      return decodeURIComponent(
+        hash.replace(/^#\//, "")
+      );
+    }
+
+    function loadVideo() {
+      fetch(JSON_URL, {
+        cache: "no-store"
+      })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error("Gagal membaca videos.json");
+          }
+
+          return response.json();
+        })
+        .then(data => {
+          if (!data || !Array.isArray(data.videos)) {
+            throw new Error("Format videos.json tidak valid");
+          }
+
+          const vids = data.videos;
+          const id = getVideoId();
+
+          let selected = null;
+
+          if (id) {
+            selected = vids.find(video => video.id === id);
+          }
+
+          if (!selected && vids.length > 0) {
+            selected = vids[0];
+          }
+
+          if (!selected || !selected.cdn) {
+            throw new Error("Video tidak tersedia");
+          }
+
+          video.src = selected.cdn;
+          title.textContent = selected.id;
+
+          error.style.display = "none";
+          video.style.display = "block";
+        })
+        .catch(err => {
+          console.error(err);
+
+          video.style.display = "none";
+          title.textContent = "";
+          error.textContent = "Video tidak dapat dimuat.";
+          error.style.display = "block";
+        });
+    }
+
+    video.addEventListener("timeupdate", () => {
+      if (!redirected && video.currentTime >= 30) {
+        redirected = true;
+        window.open(DIRECT_LINK, "_blank");
+      }
+    });
+
+    window.addEventListener("hashchange", () => {
+      redirected = false;
+      video.pause();
+      loadVideo();
+    });
+
+    loadVideo();
+  </script></body>
+</html>
